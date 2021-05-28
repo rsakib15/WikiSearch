@@ -16,7 +16,6 @@ class InvertedIndex(object):
                 index_meta.write(json.dumps({doc_id: (filename, line)}) + "\n")
 
     def genrate_inverted_index(self, article, n):
-        print(n)
         index_file_dir = os.path.join(self.index_folder, "inverted_index." + str(n) + ".json")
         meta_file_dir = os.path.join(self.index_folder, "inverted_index_meta." + str(n) + ".json")
 
