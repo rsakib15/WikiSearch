@@ -21,7 +21,6 @@ def get_directory_flie_list(base_directory):
 
 
 def main():
-
     wikis = get_directory_flie_list("../dataset/extracted_dataset/text/")
     index_start = time.time()
     dvi = DocumentVectorIndex(wikis=wikis)
