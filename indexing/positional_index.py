@@ -73,7 +73,7 @@ class PositionalIndex(object):
 
     def merge_positional_index(self):
         terms, term_meta = self.get_meta_data()
-        meta_file_dir = os.path.join(self.index_folder, "positional_index_meta.json")
+        meta_file_dir = os.path.join(self.index_folder, "meta.json")
 
         with open(meta_file_dir,"w") as meta_data_writer:
             for term in terms:
