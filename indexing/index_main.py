@@ -7,8 +7,10 @@ import os
 import time
 
 from tqdm import tqdm
+import multiprocessing as mp
 
 from document_vector_index import DocumentVectorIndex
+from index_helper import parseWikiJsons
 from inverted_index import InvertedIndex
 from positional_index import PositionalIndex
 
@@ -46,36 +48,72 @@ def generate_separte_file(wikis, output_dir):
         write_file(os.path.join(output_dir, "meta.json"), json.dumps(meta_data, ensure_ascii=False))
 
 
+def dump_meta(wikiFile, metaFile):
+    articles = parseWikiJsons(wikiFile, True)
+    with open(metaFile, 'w') as metaF:
+        for article in articles:
+            metaF.write(json.dumps(article) + '\n')
+
+
+def load_meta(metaFile):
+    articles = dict()
+    with open(metaFile) as metaF:
+        line = metaF.readline()
+        while line:
+            _article = json.loads(line)
+            articles[str(_article["uid"])] = _article
+            if "text" in articles[str(_article["uid"])]:
+                del articles[str(_article["uid"])]["text"]
+            line = metaF.readline()
+    return articles
+
+
+def dump_meta_data(wikis, filename):
+    cpu_num = mp.cpu_count()
+    pool = mp.Pool(cpu_num)
+    pool.starmap(dump_meta,[(wikis[i], filename + str(i)) for i in range(len(wikis))])
+    articles = pool.map(load_meta, [filename + str(i) for i in range(len(wikis))])
+    with open(filename, 'w') as metaF:
+        for i in range(len(wikis)):
+            for uid, article in articles[i].items():
+                metaF.write(json.dumps(article) + '\n')
+    for i in range(len(wikis)):
+        if os.path.exists(filename + str(i)):
+            os.remove(filename + str(i))
+
+
 def main():
     #get all directory of extracted dataset
     wikis = get_directory_flie_list("../dataset/extracted_dataset/text/")
 
     #for getting all file separetly
-    generate_separte_file(wikis, "../dataset/extracted_dataset/json/")
+    #generate_separte_file(wikis, "../dataset/extracted_dataset/json/")
 
-    #document vector indexing
-    index_start = time.time()
-    dvi = DocumentVectorIndex(wikis=wikis)
-    dvi.create_index()
-    indexing_time = time.time() - index_start
-    logging.info("Document vector indexing time: " + str(indexing_time))
-    print("Document vector indexing time: " + str(indexing_time))
+    dump_meta_data(wikis, "../dataset/indexing_dataset/meta.json")
 
-    # document vector indexing
-    index_start = time.time()
-    inv_index = InvertedIndex(wikis)
-    inv_index.create_index()
-    indexing_time = time.time() - index_start
-    logging.info("Inverted vector indexing time: " + str(indexing_time))
-    print("Inverted vector indexing time: " + str(indexing_time))
+    # #document vector indexing
+    # index_start = time.time()
+    # dvi = DocumentVectorIndex(wikis=wikis)
+    # dvi.create_index()
+    # indexing_time = time.time() - index_start
+    # logging.info("Document vector indexing time: " + str(indexing_time))
+    # print("Document vector indexing time: " + str(indexing_time))
 
-    #positional indexing
-    index_start = time.time()
-    pos_index = PositionalIndex(wikis)
-    pos_index.create_index()
-    indexing_time = time.time() - index_start
-    logging.info("Positional indexing time: " + str(indexing_time))
-    print("Positional indexing time: " + str(indexing_time))
+    # # document vector indexing
+    # index_start = time.time()
+    # inv_index = InvertedIndex(wikis)
+    # inv_index.create_index()
+    # indexing_time = time.time() - index_start
+    # logging.info("Inverted vector indexing time: " + str(indexing_time))
+    # print("Inverted vector indexing time: " + str(indexing_time))
+
+    # #positional indexing
+    # index_start = time.time()
+    # pos_index = PositionalIndex(wikis)
+    # pos_index.create_index()
+    # indexing_time = time.time() - index_start
+    # logging.info("Positional indexing time: " + str(indexing_time))
+    # print("Positional indexing time: " + str(indexing_time))
 
 
 if __name__ == "__main__":
