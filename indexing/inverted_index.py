@@ -2,12 +2,12 @@ import json
 import os
 import sys
 
-from index_helper import parseWikiJsons, getTerms
+from indexing.index_helper import parseWikiJsons, getTerms
 import multiprocessing as mp
 
 class InvertedIndex(object):
     def __init__(self, wikis):
-        self.index_folder = '../dataset/indexing_dataset/inverted_index'
+        self.index_folder = 'dataset/indexing_dataset/inverted_index'
         self.wikis = wikis
 
     def save_inverted_index(self, meta_info, meta_file_dir):
@@ -75,7 +75,8 @@ class InvertedIndex(object):
 
         with open(meta_file_dir,"w") as meta_data_writer:
             for term in terms:
-                meta_data_writer.write(json.dumps({term: term_meta[term]}) + "\n")
+                # meta_data_writer.write(json.dumps({term: (filename, line)}) + "\n")
+                meta_data_writer.write(json.dumps({term: (term_meta[term])}) + "\n")
 
     def create_index(self):
         cpu_num = mp.cpu_count()

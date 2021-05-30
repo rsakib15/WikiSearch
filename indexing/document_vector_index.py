@@ -1,6 +1,6 @@
 import json
 import os
-from index_helper import parseWikiJsons, getTerms
+from indexing.index_helper import parseWikiJsons, getTerms
 import multiprocessing as mp
 
 

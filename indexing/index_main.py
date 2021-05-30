@@ -9,10 +9,10 @@ import time
 from tqdm import tqdm
 import multiprocessing as mp
 
-from document_vector_index import DocumentVectorIndex
-from index_helper import parseWikiJsons
-from inverted_index import InvertedIndex
-from positional_index import PositionalIndex
+from indexing.document_vector_index import DocumentVectorIndex
+from indexing.index_helper import parseWikiJsons
+from indexing.inverted_index import InvertedIndex
+from indexing.positional_index import PositionalIndex
 
 
 def get_directory_flie_list(base_directory):
@@ -45,7 +45,7 @@ def generate_separte_file(wikis, output_dir):
                 meta_data[line_obj['id']] = output_file_name
                 write_file(output_file_name, json.dumps(line_obj, ensure_ascii=False))
 
-        write_file(os.path.join(output_dir, "meta.json"), json.dumps(meta_data, ensure_ascii=False))
+        write_file(os.path.join(output_dir, "meta.json"), json.dumps(meta_data))
 
 
 def dump_meta(wikiFile, metaFile):
@@ -84,13 +84,13 @@ def dump_meta_data(wikis, filename):
 
 def main():
     #get all directory of extracted dataset
-    wikis = get_directory_flie_list("../dataset/extracted_dataset/text/")
-
-    #for getting all file separetly
-    #generate_separte_file(wikis, "../dataset/extracted_dataset/json/")
-
-    dump_meta_data(wikis, "../dataset/indexing_dataset/meta.json")
-
+    wikis = get_directory_flie_list("dataset/extracted_dataset/text/")
+    #
+    # #for getting all file separetly
+    # #generate_separte_file(wikis, "dataset/extracted_dataset/json/")
+    #
+    # dump_meta_data(wikis, "dataset/indexing_dataset/meta.json")
+    #
     # #document vector indexing
     # index_start = time.time()
     # dvi = DocumentVectorIndex(wikis=wikis)
@@ -99,15 +99,15 @@ def main():
     # logging.info("Document vector indexing time: " + str(indexing_time))
     # print("Document vector indexing time: " + str(indexing_time))
 
-    # # document vector indexing
-    # index_start = time.time()
-    # inv_index = InvertedIndex(wikis)
-    # inv_index.create_index()
-    # indexing_time = time.time() - index_start
-    # logging.info("Inverted vector indexing time: " + str(indexing_time))
-    # print("Inverted vector indexing time: " + str(indexing_time))
+    # document vector indexing
+    index_start = time.time()
+    inv_index = InvertedIndex(wikis)
+    inv_index.create_index()
+    indexing_time = time.time() - index_start
+    logging.info("Inverted vector indexing time: " + str(indexing_time))
+    print("Inverted vector indexing time: " + str(indexing_time))
 
-    # #positional indexing
+    #positional indexing
     # index_start = time.time()
     # pos_index = PositionalIndex(wikis)
     # pos_index.create_index()
