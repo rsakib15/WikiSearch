@@ -2,6 +2,8 @@ import json
 import os
 import sys
 
+from tqdm import tqdm
+
 from indexing.index_helper import parseWikiJsons, getTerms
 import multiprocessing as mp
 
@@ -21,7 +23,7 @@ class InvertedIndex(object):
 
         wiki_data = parseWikiJsons(article)
         inverted_index = dict()
-        for article in wiki_data:
+        for article in tqdm(wiki_data):
             doc_id = article["uid"]
             text = getTerms(article["text"])
             for word in text:
@@ -38,7 +40,7 @@ class InvertedIndex(object):
         with open(index_file_dir, "w") as index_file:
             count = 1
             for term, doc_list in inverted_index.items():
-                meta_info[term] = (os.path.join(self.index_folder, "inverted_index" + str(n) + ".json"), count)
+                meta_info[term] = (os.path.join(self.index_folder, "inverted_index." + str(n) + ".json"), count)
                 index_file.write(json.dumps({term: doc_list}) + "\n")
                 count += 1
         self.save_inverted_index(meta_info, meta_file_dir)

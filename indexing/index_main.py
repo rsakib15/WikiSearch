@@ -82,39 +82,39 @@ def dump_meta_data(wikis, filename):
             os.remove(filename + str(i))
 
 
-def main():
+def index_dataset():
     #get all directory of extracted dataset
     wikis = get_directory_flie_list("dataset/extracted_dataset/text/")
-    #
-    # #for getting all file separetly
-    # #generate_separte_file(wikis, "dataset/extracted_dataset/json/")
-    #
-    # dump_meta_data(wikis, "dataset/indexing_dataset/meta.json")
-    #
-    # #document vector indexing
+
+    #for getting all file separetly
+    #generate_separte_file(wikis, "dataset/extracted_dataset/json/")
+
+    #dump_meta_data(wikis, "dataset/indexing_dataset/meta.json")
+
+    #document vector indexing
+    # print("Document vector indexing starts")
     # index_start = time.time()
     # dvi = DocumentVectorIndex(wikis=wikis)
     # dvi.create_index()
     # indexing_time = time.time() - index_start
-    # logging.info("Document vector indexing time: " + str(indexing_time))
     # print("Document vector indexing time: " + str(indexing_time))
 
-    # document vector indexing
-    index_start = time.time()
-    inv_index = InvertedIndex(wikis)
-    inv_index.create_index()
-    indexing_time = time.time() - index_start
-    logging.info("Inverted vector indexing time: " + str(indexing_time))
-    print("Inverted vector indexing time: " + str(indexing_time))
+    # inverted indexing
+    # print("Inverted indexing starts")
+    # index_start = time.time()
+    # inv_index = InvertedIndex(wikis)
+    # inv_index.create_index()
+    # indexing_time = time.time() - index_start
+    # print("Inverted vector indexing time: " + str(indexing_time))
 
     #positional indexing
-    # index_start = time.time()
-    # pos_index = PositionalIndex(wikis)
-    # pos_index.create_index()
-    # indexing_time = time.time() - index_start
-    # logging.info("Positional indexing time: " + str(indexing_time))
-    # print("Positional indexing time: " + str(indexing_time))
+    print("Positional indexing starts")
+    index_start = time.time()
+    pos_index = PositionalIndex(wikis)
+    pos_index.create_index()
+    indexing_time = time.time() - index_start
+    print("Positional indexing time: " + str(indexing_time))
 
 
 if __name__ == "__main__":
-    main()
+    index_dataset()

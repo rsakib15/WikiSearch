@@ -35,6 +35,6 @@ def getTerms(line):
     line = line.lower()
     line = re.sub(r'[^a-z0-9 ]', ' ', line)
     line = line.split()
-    stopwords = getStopwords('stopwords.txt')
+    stopwords = getStopwords('indexing/stopwords.txt')
     line = [x for x in line if x not in stopwords]
     return line

@@ -2,11 +2,11 @@ import json
 import os
 from indexing.index_helper import parseWikiJsons, getTerms
 import multiprocessing as mp
-
+from tqdm import tqdm
 
 class DocumentVectorIndex(object):
     def __init__(self, wikis):
-        self.index_folder = '../dataset/indexing_dataset/document_vector_index'
+        self.index_folder = 'dataset/indexing_dataset/document_vector_index'
         self.wikis = wikis
 
     def save_document_vector_index(self, meta_info, meta_file_dir):
@@ -21,10 +21,18 @@ class DocumentVectorIndex(object):
 
         document_vector_index = {}
 
-        for article in wiki_data:
+        for article in tqdm(wiki_data):
             doc_id = article["uid"]
             document_vector_index[doc_id] = {}
             text = getTerms(article["text"])
+            title_term = getTerms(article['title'])
+
+            for word in title_term:
+                if not word in document_vector_index[doc_id]:
+                    document_vector_index[doc_id][word] = 1
+                else:
+                    document_vector_index[doc_id][word] += 1
+
             for word in text:
                 if not word in document_vector_index[doc_id]:
                     document_vector_index[doc_id][word] = 1

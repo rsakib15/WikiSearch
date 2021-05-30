@@ -2,12 +2,14 @@ import json
 import os
 import sys
 
+from tqdm import tqdm
+
 from indexing.index_helper import parseWikiJsons, getTerms
 import multiprocessing as mp
 
 class PositionalIndex(object):
     def __init__(self, wikis):
-        self.index_folder = '../dataset/indexing_dataset/positional_index'
+        self.index_folder = 'dataset/indexing_dataset/positional_index'
         self.wikis = wikis
 
     def save_positional_index(self, meta_info, meta_file_dir):
@@ -22,7 +24,7 @@ class PositionalIndex(object):
         wiki_data = parseWikiJsons(article)
         positional_index = dict()
 
-        for article in wiki_data:
+        for article in tqdm(wiki_data):
             doc_id = article["uid"]
             text = getTerms(article["text"])
             for pos, word in enumerate(text):
