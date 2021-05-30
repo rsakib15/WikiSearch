@@ -26,7 +26,17 @@ class InvertedIndex(object):
         for article in tqdm(wiki_data):
             doc_id = article["uid"]
             text = getTerms(article["text"])
+            title = getTerms(article["title"])
             for word in text:
+                if not word in inverted_index:
+                    inverted_index[word] = {doc_id: 1}
+                else:
+                    if not doc_id in inverted_index[word]:
+                        inverted_index[word][doc_id] = 1
+                    else:
+                        inverted_index[word][doc_id] += 1
+
+            for word in title:
                 if not word in inverted_index:
                     inverted_index[word] = {doc_id: 1}
                 else:

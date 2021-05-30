@@ -27,7 +27,16 @@ class PositionalIndex(object):
         for article in tqdm(wiki_data):
             doc_id = article["uid"]
             text = getTerms(article["text"])
+            title = getTerms(article["title"])
             for pos, word in enumerate(text):
+                if not word in positional_index:
+                    positional_index[word] = {}
+                if not doc_id in positional_index[word]:
+                    positional_index[word][doc_id] = [pos]
+                else:
+                    positional_index[word][doc_id].append(pos)
+
+            for pos, word in enumerate(title):
                 if not word in positional_index:
                     positional_index[word] = {}
                 if not doc_id in positional_index[word]:
