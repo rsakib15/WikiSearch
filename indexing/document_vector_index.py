@@ -59,7 +59,7 @@ class DocumentVectorIndex(object):
                     while line:
                         data = json.loads(line)
                         for doc_id, (_, lineno) in data.items():
-                            meta_file.write(json.dumps({doc_id: (os.path.join(self.index_folder, "document_vector_index_meta." + str(i) + ".json"), lineno)}) + "\n")
+                            meta_file.write(json.dumps({doc_id: (os.path.join(self.index_folder, "document_vector_index." + str(i) + ".json"), lineno)}) + "\n")
                         line = div_meta.readline()
                 div_meta.close()
                 os.remove(meta_file_dir)
