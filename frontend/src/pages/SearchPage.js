@@ -25,26 +25,28 @@ function SearchPage() {
                 <div className="searchPage__headerBody">
                     <Search hideButtons/>
 
-                    {term &&
+                    {data?.result.length>0 &&
                         <div>
                             <p className="searchPage__resultCount">
-                                About {data?.searchInformation.formattedTotalResults} results (
-                                {data?.searchInformation.formattedSearchTime} seconds) for {term}
+                                About {data?.result.length} results (
+                                {data?.elapsed_time} seconds) for {term}
                             </p>
                         </div>
                     }
                 </div>
-
             </div>
 
-            {term && (
+            {data?.result.length>0 && (
                 <div className="searchPage__results">
-                    {data?.items.map((item) => (
+                    {
+                        data?.result.length==0 && <div>No Result Found</div>
+                    }
+                    {data?.result.length>0 && data?.result.map((item) => (
                         <div className="searchPage__result">
-                            <a className="searchPage__resultTitle" href={item.link}>
+                            <a className="searchPage__resultTitle" href={item.url} target="_blank" >
                                 <h2>{item.title}</h2>
                             </a>
-                            <p className="searchPage__resultSnippet">{item.snippet}</p>
+                            <p className="searchPage__resultSnippet">{item.url}</p>
                         </div>
                     ))}
                 </div>
