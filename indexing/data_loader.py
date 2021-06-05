@@ -7,6 +7,67 @@ import zlib
 
 from tqdm import tqdm
 
+from indexing.index_main import get_directory_flie_list
+
+
+def tf_idf_data():
+    with open(os.path.join("dataset/indexing_dataset/tf_idf/tf_idf.json"), "r") as f:
+        return json.load(f)
+
+def LoadInvertedIndex():
+    wikis = get_directory_flie_list("dataset/extracted_dataset/text/")
+    l = len(wikis)
+    invertedIndex = {}
+
+    for i in range(l):
+        with open(os.path.join("dataset/indexing_dataset/inverted_index/inverted_index." + str(i) + ".json")) as indfile:
+            line = indfile.readline()
+            while line:
+                ind = json.loads(line)
+                for k, v in ind.items():
+                    if not k in invertedIndex:
+                        invertedIndex[k] = {}
+                    for _docid, _freq in v.items():
+                        invertedIndex[k][int(_docid)] = _freq
+                line = indfile.readline()
+
+
+    return invertedIndex
+
+
+def LoadDocVecIndex():
+    wikis = get_directory_flie_list("dataset/extracted_dataset/text/")
+    l = len(wikis)
+    DocVecIndex = {}
+    for i in range(l):
+        with open(os.path.join("dataset/indexing_dataset/document_vector_index/document_vector_index." + str(i) + ".json")) as indfile:
+            line = indfile.readline()
+            while line:
+                ind = json.loads(line)
+                for docid, term_freq_dict in ind.items():
+                    DocVecIndex[int(docid)] = {}
+                    for _term, _freq in term_freq_dict.items():
+                        DocVecIndex[int(docid)][_term] = int(_freq)
+                line = indfile.readline()
+    return DocVecIndex
+
+def LoadPositionalIndex():
+    wikis = get_directory_flie_list("dataset/extracted_dataset/text/")
+    l = len(wikis)
+
+    positionalIndex = {}
+    for i in range(l):
+        with open(os.path.join("dataset/indexing_dataset/positional_index/positional_index." + str(i) + ".json")) as indFile:
+            line = indFile.readline()
+            while line:
+                ind = json.loads(line)
+                for term, term_pos_in_docs in ind.items():
+                    if not term in positionalIndex:
+                        positionalIndex[term] = {}
+                    for _doc, _pos_list in term_pos_in_docs.items():
+                        positionalIndex[term][int(_doc)] = _pos_list
+                line = indFile.readline()
+    return positionalIndex
 
 def loadInvertedIndexMeta(indexFolder):
     term2F = {}
