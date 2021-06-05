@@ -31,6 +31,7 @@ def getStopwords(stopwordsFile):
     f.close()
     return stopwords
 
+
 def getTerms(line):
     line = line.lower()
     line = re.sub(r'[^a-z0-9 ]', ' ', line)

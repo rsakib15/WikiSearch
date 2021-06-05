@@ -33,12 +33,6 @@ class DocumentVectorIndex(object):
                 else:
                     document_vector_index[doc_id][word] += 1
 
-            for word in text:
-                if not word in document_vector_index[doc_id]:
-                    document_vector_index[doc_id][word] = 1
-                else:
-                    document_vector_index[doc_id][word] += 1
-
         metaInfo = {}
 
         with open(index_file_dir, "w") as indfile:

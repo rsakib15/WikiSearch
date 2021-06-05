@@ -35,16 +35,6 @@ class InvertedIndex(object):
                         inverted_index[word][doc_id] = 1
                     else:
                         inverted_index[word][doc_id] += 1
-
-            for word in title:
-                if not word in inverted_index:
-                    inverted_index[word] = {doc_id: 1}
-                else:
-                    if not doc_id in inverted_index[word]:
-                        inverted_index[word][doc_id] = 1
-                    else:
-                        inverted_index[word][doc_id] += 1
-
         meta_info = {}
 
         with open(index_file_dir, "w") as index_file:

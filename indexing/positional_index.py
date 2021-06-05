@@ -36,14 +36,6 @@ class PositionalIndex(object):
                 else:
                     positional_index[word][doc_id].append(pos)
 
-            for pos, word in enumerate(title):
-                if not word in positional_index:
-                    positional_index[word] = {}
-                if not doc_id in positional_index[word]:
-                    positional_index[word][doc_id] = [pos]
-                else:
-                    positional_index[word][doc_id].append(pos)
-
         meta_info = {}
 
         with open(index_file_dir, "w") as index_file:
