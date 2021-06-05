@@ -55,13 +55,11 @@
 }
 
 .searchPage__result {
-    margin: 20px 0;
-    padding: 10px;
-    border-bottom: 2px solid #eee;
+    margin: 30px 0;
 }
 
-.searchPage__result:hover {
-
+.searchPage__result:hover a{
+    text-decoration: underline;
 }
 
 .searchPage__resultCount {
@@ -89,7 +87,7 @@
 }
 
 .searchPage__resultTitle:hover {
-    text-decoration: underline;
+    text-decoration: none;
 }
 
 .searchPage__resultTitle > h2 {
@@ -98,4 +96,7 @@
 
 .searchPage__resultSnippet {
     margin-top: 10px;
+}
+.searchPage__text{
+    margin-top: 5px;
 }

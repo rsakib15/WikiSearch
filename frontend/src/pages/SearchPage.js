@@ -43,10 +43,24 @@ function SearchPage() {
                     }
                     {data?.result.length>0 && data?.result.map((item) => (
                         <div className="searchPage__result">
-                            <a className="searchPage__resultTitle" href={item.url} target="_blank" >
-                                <h2>{item.title}</h2>
-                            </a>
-                            <p className="searchPage__resultSnippet">{item.url}</p>
+                            <a className="searchPage__resultTitle" href={item.url} target="_blank" ><h2>{item.title}</h2></a>
+                            <div>
+                                <p className="searchPage__resultSnippet">{item.url}</p>
+                            </div>
+                            <div className="searchPage__text">
+                                <p>{item.text}</p>
+                            </div>
+
+                            <div className="searchPage__text">
+                                <p>Topics:
+                                    {
+                                        item.words.map((i) =>(
+                                            " " + i
+                                        ))
+                                    }
+                                </p>
+                            </div>
+
                         </div>
                     ))}
                 </div>
