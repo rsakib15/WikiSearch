@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import SearchIcon from "@material-ui/icons/Search";
 import MicIcon from "@material-ui/icons/Mic";
 import { Button } from "@material-ui/core";
@@ -19,13 +19,13 @@ export default function Search({ hideButtons = false }) {
             type: actionTypes.SET_SEARCH_TERM,
             term: value,
         });
-        history.push("/search");
+        history.push('/search?q='+ value)
     };
 
     const languages = [
-        {name: 'C', year: 1972},
-        {name: 'Elm', year: 2012},
-        {name: 'Ema', year: 2012},
+        {name: 'c', year: 1972},
+        {name: 'elm', year: 2012},
+        {name: 'ema', year: 2012},
     ];
 
     const getSuggestions = value => {
