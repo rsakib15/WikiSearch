@@ -42,6 +42,8 @@ def generate_separte_file(wikis, output_dir):
                 line = lines[j]
                 line_obj = json.loads(line)
                 output_file_name = os.path.join(output_dir, line_obj['id']+".json")
+                if os.path.isfile(output_file_name):
+                    continue
                 meta_data[line_obj['id']] = output_file_name
                 write_file(output_file_name, json.dumps(line_obj, ensure_ascii=False))
 
@@ -87,9 +89,8 @@ def index_dataset():
     wikis = get_directory_flie_list("dataset/extracted_dataset/text/")
 
     #for getting all file separetly
-    generate_separte_file(wikis, "dataset/extracted_dataset/json/")
-
-    dump_meta_data(wikis, "dataset/indexing_dataset/meta.json")
+    # generate_separte_file(wikis, "dataset/extracted_dataset/json/")
+    # dump_meta_data(wikis, "dataset/indexing_dataset/meta.json")
 
     #document vector indexing
     print("Document vector indexing starts")

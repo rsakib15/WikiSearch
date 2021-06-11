@@ -15,11 +15,16 @@ class InvertedIndex(object):
     def save_inverted_index(self, meta_info, meta_file_dir):
         with open(meta_file_dir,'w') as index_meta:
             for doc_id, (filename, line) in meta_info.items():
-                index_meta.write(json.dumps({doc_id: (filename, line)}) + "\n")
+                filename = filename.split(".")
+                filename = int(filename[1])
+                index_meta.write(json.dumps({doc_id:(filename,line)}) + "\n")
 
     def genrate_inverted_index(self, article, n):
         index_file_dir = os.path.join(self.index_folder, "inverted_index." + str(n) + ".json")
         meta_file_dir = os.path.join(self.index_folder, "inverted_index_meta." + str(n) + ".json")
+
+        if os.path.exists(index_file_dir) and os.path.exists(meta_file_dir):
+            return
 
         wiki_data = parseWikiJsons(article)
         inverted_index = dict()
@@ -41,7 +46,7 @@ class InvertedIndex(object):
             count = 1
             for term, doc_list in inverted_index.items():
                 meta_info[term] = (os.path.join(self.index_folder, "inverted_index." + str(n) + ".json"), count)
-                index_file.write(json.dumps({term: doc_list}) + "\n")
+                index_file.write(json.dumps({term:doc_list}) + "\n")
                 count += 1
         self.save_inverted_index(meta_info, meta_file_dir)
 
@@ -78,12 +83,12 @@ class InvertedIndex(object):
         with open(meta_file_dir,"w") as meta_data_writer:
             for term in terms:
                 # meta_data_writer.write(json.dumps({term: (filename, line)}) + "\n")
-                meta_data_writer.write(json.dumps({term: (term_meta[term])}) + "\n")
+                meta_data_writer.write(json.dumps({term:(term_meta[term])}) + "\n")
 
     def create_index(self):
-        cpu_num = mp.cpu_count()
-        mp_pool = mp.Pool(cpu_num)
-        mp_pool.starmap(self.genrate_inverted_index, [(self.wikis[i], i) for i in range(len(self.wikis))])
+        for i in range (len(self.wikis)):
+            self.genrate_inverted_index(self.wikis[i], i)
+
         self.merge_inverted_index()
 
         for i in range(len(self.wikis)):

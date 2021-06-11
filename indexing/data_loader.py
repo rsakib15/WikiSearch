@@ -123,7 +123,7 @@ class InvertedIndexData(Indexer):
             #     line = fp.readlines()
             # content = line[i[1]-1]
             # res.append(json.loads(content))
-            res.append(_line2json(i[0], i[1]))
+            res.append(_line2json("dataset/indexing_dataset/inverted_index/inverted_index." + str(i[0]) + ".json", i[1]))
 
         for _re in res:
             re[key].update(_re[key])
@@ -150,7 +150,7 @@ class DocumentVectorIndexData(Indexer):
 
     def __getitem__(self, key):
         (filename, lineno) = self.meta[key]
-        content = linecache.getline(filename, lineno)
+        content = linecache.getline("dataset/indexing_dataset/document_vector_index/document_vector_index."+ str(filename) + ".json", lineno)
         return json.loads(content)[key]
 
     def __len__(self):
