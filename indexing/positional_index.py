@@ -41,7 +41,7 @@ class PositionalIndex(object):
         with open(index_file_dir, "w") as index_file:
             count = 1
             for term, doc_list in positional_index.items():
-                meta_info[term] = (os.path.join(self.index_folder, "positional_index" + str(n) + ".json"), count)
+                meta_info[term] = (n, count)
                 index_file.write(json.dumps({term: doc_list}) + "\n")
                 count += 1
         index_file.close()

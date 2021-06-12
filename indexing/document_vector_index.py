@@ -10,6 +10,7 @@ class DocumentVectorIndex(object):
         self.wikis = wikis
 
     def save_document_vector_index(self, meta_info, meta_file_dir):
+        print(meta_file_dir)
         with open(meta_file_dir,'w') as index_meta:
             for doc_id, (filename, line) in meta_info.items():
                 filename = filename.split(".")
@@ -59,7 +60,7 @@ class DocumentVectorIndex(object):
                     while line:
                         data = json.loads(line)
                         for doc_id, (_, lineno) in data.items():
-                            meta_file.write(json.dumps({doc_id: (os.path.join(self.index_folder, "document_vector_index." + str(i) + ".json"), lineno)}) + "\n")
+                            meta_file.write(json.dumps({doc_id: (i, lineno)}) + "\n")
                         line = div_meta.readline()
                 div_meta.close()
                 os.remove(meta_file_dir)
