@@ -1,5 +1,6 @@
 from wikisearch.searcher.score import similarity
 from indexing.data_loader import InvertedIndexData, DocumentVectorIndexData, tf_idf_data
+from ranking.rank_utils import heap
 from search_engine.search_utils import get_bow, get_high_idf_docs, get_idf
 
 
@@ -22,5 +23,6 @@ class BOW(object):
         scores = {}
         for docID in val_docs:
             scores[docID] = similarity(query_vec, self.tf_idf_DocVecIndex[docID])
-        return scores
+
+        return (heap(scores, 10), query)
 

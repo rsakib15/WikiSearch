@@ -1,3 +1,5 @@
+from heapq import heapify, heappush, heappop
+
 from wikisearch.searcher.score import similarity
 
 from indexing.data_loader import InvertedIndexData, DocumentVectorIndexData, tf_idf_data, LoadInvertedIndex
@@ -19,27 +21,17 @@ class TF_IDF(object):
         tf_idf_file = 'dataset/indexing_dataset/tf_idf'
         self.meta_data = load_meta(self.meta_data_dir)
 
-    def process_query(self, query):
-        new_query = []
-        for index, term in enumerate(query):
-            new_term = term.replace(" ", "")
-            if new_term:
-                new_query.append(new_term)
-        query = new_query
+    def heap(self, scores, top_k):
+        heap = []
+        heapify(heap)
+        for doc in scores:
+            heappush(heap, (-scores[doc], doc))
 
-        # Remove non-chinese character
-        for index, term in enumerate(query):
-            valid_chrs = ""
-            for ch in term:
-                valid_chrs += ch
-            query[index] = valid_chrs
-
-        # Remove stop words
-        clean_query = []
-        for term in query:
-            clean_query.append(term)
-
-        return clean_query
+        top_k_docs = []
+        num = min(len(heap), top_k)
+        for i in range(num):
+            top_k_docs.append(heappop(heap)[1])
+        return top_k_docs
 
     def naive_jaccard(self, query, title):
         query = set(query)
@@ -52,5 +44,5 @@ class TF_IDF(object):
         for docID in val_docs:
             scores[docID] = similarity(query_vec, self.tf_idf_DocVecIndex[str(docID)])
 
-        return scores
+        return (self.heap(scores, 10), query)
 

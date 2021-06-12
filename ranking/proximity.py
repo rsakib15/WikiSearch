@@ -53,7 +53,7 @@ class Proximity(object):
                     "url": self.meta_data[str(doc_id)]["url"],
                     "title": self.meta_data[str(doc_id)]["title"]
                 })
-        print(result)
+
         return result
 
 

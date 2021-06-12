@@ -3,6 +3,7 @@ import time
 
 from indexing.data_loader import InvertedIndexData, LoadDocVecIndex, LoadInvertedIndex
 from indexing.index_main import load_meta
+from ranking.rank_utils import heap
 from search_engine.search_utils import cosine_similarity
 
 class CosineSearch(object):
@@ -36,5 +37,6 @@ class CosineSearch(object):
         score = {}
         for doc_id in result:
             score[doc_id] = cosine_similarity(query, self.document_vector_index_data[doc_id],self.inverted_index_data, N)
-        score = {k: v for k, v in sorted(score.items(), key=lambda item: item[1], reverse=True)}
-        return score
+        scores = {k: v for k, v in sorted(score.items(), key=lambda item: item[1], reverse=True)}
+
+        return (heap(scores, 10), query)
