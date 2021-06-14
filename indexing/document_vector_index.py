@@ -6,13 +6,14 @@ from tqdm import tqdm
 
 class DocumentVectorIndex(object):
     def __init__(self, wikis):
-        self.index_folder = 'dataset/indexing_dataset/document_vector_index'
+        self.index_folder = '../dataset/indexing_dataset/document_vector_index'
         self.wikis = wikis
 
     def save_document_vector_index(self, meta_info, meta_file_dir):
         print(meta_file_dir)
         with open(meta_file_dir,'w') as index_meta:
             for doc_id, (filename, line) in meta_info.items():
+                filename = filename.split("/")[-1]
                 filename = filename.split(".")
                 filename = int(filename[1])
                 index_meta.write(json.dumps({doc_id: (filename, line)}) + "\n")
