@@ -32,10 +32,11 @@ def getStopwords(stopwordsFile):
     return stopwords
 
 
-def getTerms(line):
+def getTerms(line,remove_stopwords=True):
     line = line.lower()
     line = re.sub(r'[^a-z0-9 ]', ' ', line)
     line = line.split()
-    stopwords = getStopwords('indexing/stopwords.txt')
-    line = [x for x in line if x not in stopwords]
+    if remove_stopwords:
+        stopwords = getStopwords('indexing/stopwords.txt')
+        line = [x for x in line if x not in stopwords]
     return line
