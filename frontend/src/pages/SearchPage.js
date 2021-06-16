@@ -1,19 +1,12 @@
-import React from "react";
+import React, { useState,useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useStateValue } from "../store/StateProvider";
 import useGoogleSearch from "../components/useGoogleSearch";
 import Search from "../components/Search";
-import SearchIcon from "@material-ui/icons/Search";
-import DescriptionIcon from "@material-ui/icons/Description";
-import ImageIcon from "@material-ui/icons/Image";
-import RoomIcon from "@material-ui/icons/Room";
 
 function SearchPage() {
-    const [{ term }, dispatch] = useStateValue();
-    const { data } = useGoogleSearch(term);
-
-    console.log(data);
-    console.log(term);
+    const [{ term, method }, dispatch] = useStateValue();
+    const { data } = useGoogleSearch(term, method)
 
     return (
         <div className="searchPage">
@@ -25,7 +18,7 @@ function SearchPage() {
                 <div className="searchPage__headerBody">
                     <Search hideButtons/>
 
-                    {data?.result.length>0 &&
+                    {term && data?.result.length>0 &&
                         <div>
                             <p className="searchPage__resultCount">
                                 About {data?.result.length} results (
@@ -36,10 +29,10 @@ function SearchPage() {
                 </div>
             </div>
 
-            {data?.result.length>0 && (
+            {term && (
                 <div className="searchPage__results">
                     {
-                        data?.result.length==0 && <div>No Result Found</div>
+                        data?.result.length===0 && <div className="searchPage__result">No Result Found</div>
                     }
                     {data?.result.length>0 && data?.result.map((item) => (
                         <div className="searchPage__result">
@@ -50,17 +43,6 @@ function SearchPage() {
                             <div className="searchPage__text">
                                 <p>{item.text}</p>
                             </div>
-
-                            {/*<div className="searchPage__text">*/}
-                            {/*    <p>Topics:*/}
-                            {/*        {*/}
-                            {/*            item.words.map((i) =>(*/}
-                            {/*                " " + i*/}
-                            {/*            ))*/}
-                            {/*        }*/}
-                            {/*    </p>*/}
-                            {/*</div>*/}
-
                         </div>
                     ))}
                 </div>
