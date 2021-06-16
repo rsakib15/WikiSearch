@@ -1,6 +1,5 @@
-from wikisearch.searcher.score import similarity
 from indexing.data_loader import InvertedIndexData, DocumentVectorIndexData, tf_idf_data
-from ranking.rank_utils import heap
+from ranking.rank_utils import heap,similarity
 from search_engine.search_utils import get_bow, get_high_idf_docs, get_idf, get_tf_idf_score
 
 
