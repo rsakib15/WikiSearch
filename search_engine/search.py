@@ -13,7 +13,6 @@ from ranking.proximity import Proximity
 from ranking.tf_idf import TF_IDF
 from ranking.high_tf_idf import HIGH_TF_IDF
 from ranking.jaccard import Jaccard
-from search_engine.search_base import Searcher, heap
 
 print("Meta data loading")
 meta_data = load_meta(os.path.join('../dataset/indexing_dataset/meta.json'))
