@@ -1,4 +1,3 @@
-from wikisearch.searcher.score import similarity
 from indexing.data_loader import InvertedIndexData, DocumentVectorIndexData, tf_idf_data, LoadPositionalIndex
 from indexing.index_main import load_meta
 import bisect

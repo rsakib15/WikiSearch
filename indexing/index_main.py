@@ -86,7 +86,7 @@ def dump_meta_data(wikis, filename):
 
 def index_dataset():
     #get all directory of extracted dataset
-    wikis = get_directory_file_list("dataset/extracted_dataset/text/")
+    wikis = get_directory_file_list("../dataset/extracted_dataset/text/")
 
     #for getting all file separetly
     # generate_separte_file(wikis, "dataset/extracted_dataset/json/")

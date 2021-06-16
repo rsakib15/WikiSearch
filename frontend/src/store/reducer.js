@@ -18,6 +18,7 @@ const reducer = (state, action) => {
             return {
                 ...state,
                 term: action.term,
+                method: action.method
             };
         default:
             return state;

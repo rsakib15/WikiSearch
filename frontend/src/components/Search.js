@@ -1,40 +1,53 @@
-import React, { useState,useEffect } from "react";
-import SearchIcon from "@material-ui/icons/Search";
-import MicIcon from "@material-ui/icons/Mic";
-import { Button } from "@material-ui/core";
-import { useHistory } from "react-router-dom";
-import { useStateValue } from "../store/StateProvider";
-import { actionTypes } from "../store/reducer";
+import React, {useState} from "react";
+import {Button} from "@material-ui/core";
+import {useHistory} from "react-router-dom";
+import {useStateValue} from "../store/StateProvider";
+import {actionTypes} from "../store/reducer";
 import Autosuggest from 'react-autosuggest';
+import axios from 'axios';
 
 export default function Search({ hideButtons = false }) {
     const [{ data }, dispatch] = useStateValue();
     const [input, setInput] = useState("");
     const [value, setValue] = useState("");
     const [suggestions, setSuggestions] = useState([]);
+    const [rank, setRank] = useState("cosine");
     const history = useHistory();
+    // const q = this.location.q;
+    //
+    //
+    // setValue(q)
 
     const search = () => {
+        console.log("search called")
+        if(value==="") {
+            console.log("No value")
+            return
+        }
         dispatch({
             type: actionTypes.SET_SEARCH_TERM,
             term: value,
+            method: rank
         });
-        history.push('/search?q='+ value)
+        history.push('/search?q='+ value + "&m="  + rank)
     };
 
-    const languages = [
-        {name: 'c', year: 1972},
-        {name: 'elm', year: 2012},
-        {name: 'ema', year: 2012},
-    ];
+    const d = async (inputValue) => {
+        axios.get(`http://127.0.0.1:5000/suggestion?&q=${inputValue}`,
+            {
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Headers': 'X-Requested-With',
+                    'Content-Type': 'application/json'
+                }
+            }).then(function (response) {
+            setSuggestions(response.data.result)
+        });
+    };
 
     const getSuggestions = value => {
         const inputValue = value.trim().toLowerCase();
-        const inputLength = inputValue.length;
-
-        return inputLength === 0 ? [] : languages.filter(lang =>
-            lang.name.toLowerCase().slice(0, inputLength) === inputValue
-        );
+        return d(inputValue)
     };
 
     const onChange = (event, { newValue }) => {
@@ -49,10 +62,10 @@ export default function Search({ hideButtons = false }) {
         setSuggestions([])
     };
 
-    const getSuggestionValue = suggestion => suggestion.name;
+    const getSuggestionValue = suggestion => suggestion;
     const renderSuggestion = suggestion => (
         <div>
-            {suggestion.name}
+            {suggestion}
         </div>
     );
 
@@ -60,7 +73,6 @@ export default function Search({ hideButtons = false }) {
         switch (event.keyCode) {
             case 13: {
                 event.preventDefault();
-                console.log("oyeeeeee")
                 search()
             }
         }
@@ -70,9 +82,12 @@ export default function Search({ hideButtons = false }) {
         placeholder: 'Search',
         value,
         onChange: onChange,
-        onKeyDown: onKeyDown
     };
 
+    const rankChanged = (e) =>{
+        console.log(e.target.value)
+        setRank(e.target.value)
+    };
 
     return (
         <div>
@@ -86,11 +101,18 @@ export default function Search({ hideButtons = false }) {
                     inputProps={inputProps}
                 />
 
-                {!hideButtons &&
+                {
                     <div className="search__buttons">
                         <Button type="submit" onClick={search} variant="outlined">Search</Button>
                     </div>
                 }
+                <div className="ranking">
+                    <span><input type="radio" name="site_name" value="bow" checked={rank==="bow"} onChange={rankChanged}/> BOW</span>
+                    <span><input type="radio" name="site_name" value="jaccard" checked={rank==="jaccard"} onChange={rankChanged}/> Jaccard</span>
+                    <span><input type="radio" name="site_name" value="tfidf" checked={rank==="tfidf"} onChange={rankChanged}/> TF_IDF</span>
+                    <span><input type="radio" name="site_name" value="highidf" checked={rank==="highidf"} onChange={rankChanged}/> HIGH_IDF</span>
+                    <span><input type="radio" name="site_name" value="cosine" checked={rank==="cosine"} onChange={rankChanged}/> Cosine</span>
+                </div>
             </div>
         </div>
     );

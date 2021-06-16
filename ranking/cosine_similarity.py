@@ -16,18 +16,18 @@ class CosineSearch(object):
         elapsed = time.time() - start
         return
 
-    def search(self, query):
+    def search(self, query ):
         N = len(self.article_mata)
         result = []
-        query = query.split(" ")
+        q = query.split(" ")
 
-        for q_term in query:
+        for q_term in q:
             if q_term in self.inverted_index_data:
                 for key, _ in self.inverted_index_data[q_term].items():
                     result += [key]
         result = list(set(result))
 
-        for q_term in query:
+        for q_term in q:
             if q_term in self.inverted_index_data:
                 temp = []
                 for key, _ in self.inverted_index_data[q_term].items():
@@ -38,5 +38,5 @@ class CosineSearch(object):
         for doc_id in result:
             score[doc_id] = cosine_similarity(query, self.document_vector_index_data[doc_id],self.inverted_index_data, N)
         scores = {k: v for k, v in sorted(score.items(), key=lambda item: item[1], reverse=True)}
-
-        return (heap(scores, 10), query)
+        print(scores)
+        return heap(scores, 10), query

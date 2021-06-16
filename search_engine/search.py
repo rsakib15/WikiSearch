@@ -13,19 +13,18 @@ from ranking.proximity import Proximity
 from ranking.tf_idf import TF_IDF
 from ranking.high_tf_idf import HIGH_TF_IDF
 from ranking.jaccard import Jaccard
-from search_engine.search_base import Searcher, heap
 
-# print("Meta data loading")
-# meta_data = load_meta(os.path.join('../dataset/indexing_dataset/meta.json'))
-# print("Meta data loaded")
+print("Meta data loading")
+meta_data = load_meta(os.path.join('../dataset/indexing_dataset/meta.json'))
+print("Meta data loaded")
 from search_engine.search_utils import get_idf
 
 print("DocumentVectorIndexData data loading")
 document_vector_index_data = DocumentVectorIndexData()
 print("DocumentVectorIndexData data done")
-# print("InvertedIndexData data loading")
-# inverted_index_meta_data = InvertedIndexData()
-# print("InvertedIndexData data done")
+print("InvertedIndexData data loading")
+inverted_index_meta_data = InvertedIndexData()
+print("InvertedIndexData data done")
 # print("IDF Data generating")
 # get_idf(inverted_index_meta_data)
 # print("IDF Data generated")
@@ -33,7 +32,7 @@ print("IDF Data Loading")
 idf_data = LoadIDFData()
 print("IDF Data Loaded")
 print("TF_IDF start")
-genreate_tf_idf(document_vector_index_data,idf_data)
+# genreate_tf_idf(document_vector_index_data,idf_data)
 # print("Separate meta start")
 # genreate_inv_meta()
 # print("Separate meta generated")
@@ -76,15 +75,26 @@ def get_summary(docId, words):
         'id': doc['id']
     }
 
-def search(query, method):
+def searcher(query, method):
     query = query.lower()
     print(query)
     print(method)
 
     #searcher = Searcher(proc_num=8, cluster_load=1, tf_idf=1)
-    searcher = BOW(doc_vec_data = document_vector_index_data, inv_data = inverted_index_meta_data, idf_data = idf_data)
-    #searcher = Jaccard()
-    #searcher = HIGH_TF_IDF()
+    if method == "bow":
+        searcher = BOW(doc_vec_data = document_vector_index_data, inv_data = inverted_index_meta_data, idf_data = idf_data)
+    elif method == "jaccard":
+        searcher = Jaccard()
+    elif method == "highidf":
+        searcher = HIGH_TF_IDF()
+    elif method == "tfidf":
+        searcher = TF_IDF()
+    elif method == "cosine":
+        searcher = CosineSearch()
+    else:
+        searcher = BOW(doc_vec_data = document_vector_index_data, inv_data = inverted_index_meta_data, idf_data = idf_data)
+
+
     #searcher = CosineSearch()
     print("Search loaded")
     #searcher = Proximity()

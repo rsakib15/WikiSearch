@@ -27,7 +27,7 @@ def biword_phrase(text):
 class FuzzySearch(object):
 
     def __init__(self, wikis=None):
-        self.dictionary_folder = 'dataset/dictionary_dataset/'
+        self.dictionary_folder = '../dataset/dictionary_dataset/'
         if not wikis is None:
             self.wikis = wikis
 
