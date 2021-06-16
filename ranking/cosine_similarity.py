@@ -11,7 +11,7 @@ class CosineSearch(object):
         start = time.time()
         self.inverted_index_data = LoadInvertedIndex()
         self.document_vector_index_data = LoadDocVecIndex()
-        self.meta_data_dir = 'dataset/indexing_dataset/meta.json'
+        self.meta_data_dir = '../dataset/indexing_dataset/meta.json'
         self.article_mata = load_meta(self.meta_data_dir)
         elapsed = time.time() - start
         return

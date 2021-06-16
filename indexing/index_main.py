@@ -86,11 +86,11 @@ def dump_meta_data(wikis, filename):
 
 def index_dataset():
     #get all directory of extracted dataset
-    wikis = get_directory_flie_list("dataset/extracted_dataset/text/")
+    wikis = get_directory_flie_list("../dataset/extracted_dataset/text/")
 
     #for getting all file separetly
-    # generate_separte_file(wikis, "dataset/extracted_dataset/json/")
-    # dump_meta_data(wikis, "dataset/indexing_dataset/meta.json")
+    generate_separte_file(wikis, "../dataset/extracted_dataset/json/")
+    dump_meta_data(wikis, "../dataset/indexing_dataset/meta.json")
 
     #document vector indexing
     # print("Document vector indexing starts")
@@ -107,14 +107,14 @@ def index_dataset():
     # inv_index.create_index()
     # indexing_time = time.time() - index_start
     # print("Inverted vector indexing time: " + str(indexing_time))
-
-    # #positional indexing
-    print("Positional indexing starts")
-    index_start = time.time()
-    pos_index = PositionalIndex(wikis)
-    pos_index.create_index()
-    indexing_time = time.time() - index_start
-    print("Positional indexing time: " + str(indexing_time))
+    #
+    # # #positional indexing
+    # print("Positional indexing starts")
+    # index_start = time.time()
+    # pos_index = PositionalIndex(wikis)
+    # pos_index.create_index()
+    # indexing_time = time.time() - index_start
+    # print("Positional indexing time: " + str(indexing_time))
 
 
 if __name__ == "__main__":

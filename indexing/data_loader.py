@@ -4,7 +4,7 @@ import os
 import pickle
 import sys
 import zlib
-
+import pandas as pd
 from tqdm import tqdm
 
 from indexing.index_main import get_directory_flie_list
@@ -15,12 +15,12 @@ def tf_idf_data():
         return json.load(f)
 
 def LoadInvertedIndex():
-    wikis = get_directory_flie_list("dataset/extracted_dataset/text/")
+    wikis = get_directory_flie_list("../dataset/extracted_dataset/text/")
     l = len(wikis)
     invertedIndex = {}
 
     for i in range(l):
-        with open(os.path.join("dataset/indexing_dataset/inverted_index/inverted_index." + str(i) + ".json")) as indfile:
+        with open(os.path.join("../dataset/indexing_dataset/inverted_index/inverted_index." + str(i) + ".json")) as indfile:
             line = indfile.readline()
             while line:
                 ind = json.loads(line)
@@ -36,11 +36,11 @@ def LoadInvertedIndex():
 
 
 def LoadDocVecIndex():
-    wikis = get_directory_flie_list("dataset/extracted_dataset/text/")
+    wikis = get_directory_flie_list("../dataset/extracted_dataset/text/")
     l = len(wikis)
     DocVecIndex = {}
     for i in range(l):
-        with open(os.path.join("dataset/indexing_dataset/document_vector_index/document_vector_index." + str(i) + ".json")) as indfile:
+        with open(os.path.join("../dataset/indexing_dataset/document_vector_index/document_vector_index." + str(i) + ".json")) as indfile:
             line = indfile.readline()
             while line:
                 ind = json.loads(line)
@@ -52,12 +52,12 @@ def LoadDocVecIndex():
     return DocVecIndex
 
 def LoadPositionalIndex():
-    wikis = get_directory_flie_list("dataset/extracted_dataset/text/")
+    wikis = get_directory_flie_list("../dataset/extracted_dataset/text/")
     l = len(wikis)
 
     positionalIndex = {}
     for i in range(l):
-        with open(os.path.join("dataset/indexing_dataset/positional_index/positional_index." + str(i) + ".json")) as indFile:
+        with open(os.path.join("../dataset/indexing_dataset/positional_index/positional_index." + str(i) + ".json")) as indFile:
             line = indFile.readline()
             while line:
                 ind = json.loads(line)
@@ -91,6 +91,10 @@ def loadDocVecIndexMeta(indexFolder):
             line = indfile.readline()
     return DocVecIndex
 
+def LoadIDFData():
+    with open(os.path.join("../dataset/indexing_dataset/tf_idf/idf.json"), "r") as f:
+        return json.load(f)
+
 class Indexer(object):
     def __init__(self):
         self.meta = None
@@ -110,7 +114,7 @@ def _line2json(filename, lineno):
 class InvertedIndexData(Indexer):
     def __init__(self):
         super().__init__()
-        self.index_folder = 'dataset/indexing_dataset/inverted_index'
+        self.index_folder = '../dataset/indexing_dataset/inverted_index'
         self.meta = loadInvertedIndexMeta(self.index_folder)
 
     def __getitem__(self, key):
@@ -123,7 +127,7 @@ class InvertedIndexData(Indexer):
             #     line = fp.readlines()
             # content = line[i[1]-1]
             # res.append(json.loads(content))
-            res.append(_line2json("dataset/indexing_dataset/inverted_index/inverted_index." + str(i[0]) + ".json", i[1]))
+            res.append(_line2json("../dataset/indexing_dataset/inverted_index/inverted_index." + str(i[0]) + ".json", i[1]))
 
         for _re in res:
             re[key].update(_re[key])
@@ -145,12 +149,12 @@ class InvertedIndexData(Indexer):
 class DocumentVectorIndexData(Indexer):
     def __init__(self):
         super().__init__()
-        self.index_folder = 'dataset/indexing_dataset/document_vector_index'
+        self.index_folder = '../dataset/indexing_dataset/document_vector_index'
         self.meta = loadDocVecIndexMeta(self.index_folder)
 
     def __getitem__(self, key):
         (filename, lineno) = self.meta[key]
-        content = linecache.getline("dataset/indexing_dataset/document_vector_index/document_vector_index."+ str(filename) + ".json", lineno)
+        content = linecache.getline("../dataset/indexing_dataset/document_vector_index/document_vector_index."+ str(filename) + ".json", lineno)
         return json.loads(content)[key]
 
     def __len__(self):

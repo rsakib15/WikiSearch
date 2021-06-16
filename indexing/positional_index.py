@@ -9,7 +9,7 @@ import multiprocessing as mp
 
 class PositionalIndex(object):
     def __init__(self, wikis):
-        self.index_folder = 'dataset/indexing_dataset/positional_index'
+        self.index_folder = '../dataset/indexing_dataset/positional_index'
         self.wikis = wikis
 
     def save_positional_index(self, meta_info, meta_file_dir):
@@ -51,6 +51,7 @@ class PositionalIndex(object):
         terms = []
         term_meta = {}
         for i in range(len(self.wikis)):
+            print("Scraping " + str(i) + " data.")
             with open(os.path.join(self.index_folder, "positional_index_meta." + str(i) + ".json")) as index_meta:
                 line = index_meta.readline()
                 while line:
@@ -64,6 +65,7 @@ class PositionalIndex(object):
             term_meta[terms[i]] = []
 
         for i in range(len(self.wikis)):
+            print("Scraping meta " + str(i) + " data.")
             with open(os.path.join(self.index_folder, "positional_index_meta." + str(i) + ".json")) as index_meta:
                 line = index_meta.readline()
                 while line:
@@ -79,7 +81,7 @@ class PositionalIndex(object):
         meta_file_dir = os.path.join(self.index_folder, "meta.json")
 
         with open(meta_file_dir,"w") as meta_data_writer:
-            for term in terms:
+            for term in tqdm(terms):
                 meta_data_writer.write(json.dumps({term: term_meta[term]}) + "\n")
 
     def create_index(self):

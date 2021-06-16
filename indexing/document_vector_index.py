@@ -33,9 +33,8 @@ class DocumentVectorIndex(object):
             doc_id = article["uid"]
             document_vector_index[doc_id] = {}
             text = getTerms(article["text"])
-            title_term = getTerms(article['title'])
 
-            for word in title_term:
+            for word in text:
                 if not word in document_vector_index[doc_id]:
                     document_vector_index[doc_id][word] = 1
                 else:

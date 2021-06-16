@@ -9,7 +9,7 @@ import multiprocessing as mp
 class Proximity(object):
     def __init__(self):
         self.positionalIndex = LoadPositionalIndex()
-        self.meta_data_dir = 'dataset/indexing_dataset/meta.json'
+        self.meta_data_dir = '../dataset/indexing_dataset/meta.json'
         self.meta_data = load_meta(self.meta_data_dir)
 
     def positional_search(self, query, doc_id):

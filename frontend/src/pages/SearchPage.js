@@ -51,15 +51,15 @@ function SearchPage() {
                                 <p>{item.text}</p>
                             </div>
 
-                            <div className="searchPage__text">
-                                <p>Topics:
-                                    {
-                                        item.words.map((i) =>(
-                                            " " + i
-                                        ))
-                                    }
-                                </p>
-                            </div>
+                            {/*<div className="searchPage__text">*/}
+                            {/*    <p>Topics:*/}
+                            {/*        {*/}
+                            {/*            item.words.map((i) =>(*/}
+                            {/*                " " + i*/}
+                            {/*            ))*/}
+                            {/*        }*/}
+                            {/*    </p>*/}
+                            {/*</div>*/}
 
                         </div>
                     ))}

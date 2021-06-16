@@ -9,12 +9,13 @@ import multiprocessing as mp
 
 class InvertedIndex(object):
     def __init__(self, wikis):
-        self.index_folder = 'dataset/indexing_dataset/inverted_index'
+        self.index_folder = '../dataset/indexing_dataset/inverted_index'
         self.wikis = wikis
 
     def save_inverted_index(self, meta_info, meta_file_dir):
         with open(meta_file_dir,'w') as index_meta:
             for doc_id, (filename, line) in meta_info.items():
+                filename = filename.split("/")[-1]
                 filename = filename.split(".")
                 filename = int(filename[1])
                 index_meta.write(json.dumps({doc_id:(filename,line)}) + "\n")
@@ -54,6 +55,7 @@ class InvertedIndex(object):
         terms = []
         term_meta = {}
         for i in range(len(self.wikis)):
+            print("Scraping " + str(i) + " data.")
             with open(os.path.join(self.index_folder, "inverted_index_meta." + str(i) + ".json")) as ind_meta:
                 line = ind_meta.readline()
                 while line:
@@ -67,6 +69,7 @@ class InvertedIndex(object):
             term_meta[terms[i]] = []
 
         for i in range(len(self.wikis)):
+            print("Scraping meta " + str(i) + " data.")
             with open(os.path.join(self.index_folder, "inverted_index_meta." + str(i) + ".json")) as ind_meta:
                 line = ind_meta.readline()
                 while line:
@@ -81,7 +84,7 @@ class InvertedIndex(object):
         meta_file_dir = os.path.join(self.index_folder, "meta.json")
 
         with open(meta_file_dir,"w") as meta_data_writer:
-            for term in terms:
+            for term in tqdm(terms):
                 # meta_data_writer.write(json.dumps({term: (filename, line)}) + "\n")
                 meta_data_writer.write(json.dumps({term:(term_meta[term])}) + "\n")
 
