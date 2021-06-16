@@ -7,7 +7,7 @@ import zlib
 import pandas as pd
 from tqdm import tqdm
 
-from indexing.index_main import get_directory_flie_list
+from indexing.index_main import get_directory_file_list
 
 
 def tf_idf_data():
@@ -15,7 +15,7 @@ def tf_idf_data():
         return json.load(f)
 
 def LoadInvertedIndex():
-    wikis = get_directory_flie_list("../dataset/extracted_dataset/text/")
+    wikis = get_directory_file_list("../dataset/extracted_dataset/text/")
     l = len(wikis)
     invertedIndex = {}
 
@@ -36,7 +36,7 @@ def LoadInvertedIndex():
 
 
 def LoadDocVecIndex():
-    wikis = get_directory_flie_list("../dataset/extracted_dataset/text/")
+    wikis = get_directory_file_list("../dataset/extracted_dataset/text/")
     l = len(wikis)
     DocVecIndex = {}
     for i in range(l):
@@ -52,7 +52,7 @@ def LoadDocVecIndex():
     return DocVecIndex
 
 def LoadPositionalIndex():
-    wikis = get_directory_flie_list("../dataset/extracted_dataset/text/")
+    wikis = get_directory_file_list("../dataset/extracted_dataset/text/")
     l = len(wikis)
 
     positionalIndex = {}

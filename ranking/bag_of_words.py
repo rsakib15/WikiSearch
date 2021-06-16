@@ -22,12 +22,12 @@ class BOW(object):
         val_docs = get_high_idf_docs(query, self.idf, self.inverted_index_meta_data, self.idf_threshold)
         scores = {}
         for docID in val_docs:
-            res = {}
-            for term in self.document_vector_index_data[docID]:
-                tf = self.document_vector_index_data[docID][term] / len(self.document_vector_index_data[docID])
-                idf_data = self.idf[term]
-                res[term] = get_tf_idf_score(tf, idf_data, self.total_documents)
-            scores[docID] = similarity(query_vec, res)
-
+            # res = {}
+            # for term in self.document_vector_index_data[docID]:
+            #     tf = self.document_vector_index_data[docID][term] / len(self.document_vector_index_data[docID])
+            #     idf_data = self.idf[term]
+            #     res[term] = get_tf_idf_score(tf, idf_data, self.total_documents)
+            scores[docID] = similarity(query_vec, self.tf_idf_DocVecIndex[docID])
+        print(scores)
         return heap(scores, 10), query
 

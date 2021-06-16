@@ -23,7 +23,7 @@ def bigram_word(word, bias=None):
 class FuzzySearch(object):
 
     def __init__(self, wikis=None):
-        self.dictionary_folder = 'dataset/dictionary_dataset/'
+        self.dictionary_folder = '../dataset/dictionary_dataset/'
         if not wikis is None:
             self.wikis = wikis
 
@@ -258,19 +258,19 @@ class FuzzySearch(object):
         
 
 if __name__ == '__main__':
-    wikis = get_directory_file_list("dataset/extracted_dataset/text/")
+    wikis = get_directory_file_list("../dataset/extracted_dataset/text/")
     fuzzy = FuzzySearch(wikis)
-    if not fuzzy.exists():
-        print("Generating Fuzzy Search")
-        start = time.time()
-        fuzzy.create()
-        finish = time.time()
-        print("Generated Fuzzy Search in {} seconds".format(str(finish-start)))
-    else:
-        print("Loading Fuzzy Search")
-        start = time.time()
-        fuzzy.load()
-        finish = time.time()
-        print("Loaded Fuzzy Search in {} seconds".format(str(finish-start)))
-    print(fuzzy.process_fuzzy('ho*se the graet'))
+    # if not fuzzy.exists():
+    #     print("Generating Fuzzy Search")
+    #     start = time.time()
+    #     fuzzy.create()
+    #     finish = time.time()
+    #     print("Generated Fuzzy Search in {} seconds".format(str(finish-start)))
+    # else:
+    #     print("Loading Fuzzy Search")
+    #     start = time.time()
+    #     fuzzy.load()
+    #     finish = time.time()
+    #     print("Loaded Fuzzy Search in {} seconds".format(str(finish-start)))
+    # print(fuzzy.process_fuzzy('ho*se the graet'))
     
