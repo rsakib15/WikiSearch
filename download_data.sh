@@ -1,12 +1,12 @@
-mkdir dataset/
-mkdir dataset/dumps_dataset
-mkdir dataset/extracted_dataset
-mkdir dataset/indexing_dataset
-mkdir dataset/indexing_dataset/inverted_index
-mkdir dataset/indexing_dataset/positional_index
-mkdir dataset/indexing_dataset/document_vector_index
+mkdir ../dataset/
+mkdir ../dataset/dumps_dataset
+mkdir ../dataset/extracted_dataset
+mkdir ../dataset/indexing_dataset
+mkdir ../dataset/indexing_dataset/inverted_index
+mkdir ../dataset/indexing_dataset/positional_index
+mkdir ../dataset/indexing_dataset/document_vector_index
 
-cd dataset/dumps_dataset
+cd ../dataset/dumps_dataset
 
 
 #for debug
