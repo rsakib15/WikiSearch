@@ -2,6 +2,7 @@ import json
 import pickle
 import os
 import enchant
+import re
 
 from tqdm import tqdm
 import time
@@ -63,7 +64,7 @@ class FuzzySearch(object):
         mp_pool.starmap(self.generate_frequencies_helper, [(self.wikis[i],i)for i in range(len(self.wikis))])
         frequencies = {}
         biword_frequencies = {}
-        for i in range(len(self.wikis)):
+        for i in tqdm(range(len(self.wikis))):
             with open(os.path.join(self.dictionary_folder,'frequencies.'+str(i)+'.pickle'),'rb') as file:
                 tmp_freq = pickle.load(file)
                 for word in tmp_freq:
@@ -215,10 +216,11 @@ class FuzzySearch(object):
                 word = word[len(split[0]):-len(split[-1])]
             index = -1
             for part in middle:
-                index = word.find(part)
-                if index == -1:
-                    break
-                word = word[index+len(part):]
+                if not part == '':
+                    index = word.find(part)
+                    if index == -1:
+                        break
+                    word = word[index+len(part):]
             if len(middle)==0 or index > -1:
                 results.append((self.dictionary[potential],self.frequencies[self.dictionary[potential]]))
         results.sort(key=lambda x:x[1], reverse = True)
@@ -263,6 +265,7 @@ class FuzzySearch(object):
 
     def process_fuzzy(self, query, query_n = 5, wildcard_n = 10, spellcheck_n = 10):
         query = query.lower()
+        query = re.sub(r'[^a-z0-9 *]', ' ', query)
         terms = query.split(' ')
         fuzzy_lists = []
         for term in terms:
@@ -314,5 +317,5 @@ if __name__ == '__main__':
         fuzzy.load()
         finish = time.time()
         print("Loaded Fuzzy Search in {} seconds".format(str(finish-start)))
-    print(fuzzy.process_fuzzy('Alex* the greqt'))
+    print(fuzzy.process_fuzzy('Alex* the graet'))
     
