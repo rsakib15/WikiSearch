@@ -20,26 +20,40 @@ def bigram_word(word, bias=None):
     #Return bigrams for edited word
     return set([word[i:i+2] for i in range(len(word)-1)])
 
+def biword_phrase(text):
+    return set([(text[i]+' '+text[i+1]) for i in range(len(text)-1)])
+
 class FuzzySearch(object):
 
     def __init__(self, wikis=None):
-        self.dictionary_folder = '../dataset/dictionary_dataset/'
+        self.dictionary_folder = 'dataset/dictionary_dataset/'
         if not wikis is None:
             self.wikis = wikis
 
     def generate_frequencies_helper(self, article, m):
         frequencies_path = os.path.join(self.dictionary_folder, 'frequencies.'+str(m)+'.pickle')
+        biword_frequencies_path = os.path.join(self.dictionary_folder, 'biword_frequencies.'+str(m)+'.pickle')
         wiki_data = parseWikiJsons(article)
         frequencies = {}
+        biword_frequencies = {}
         for article in tqdm(wiki_data):
             terms = getTerms(article['text'],remove_stopwords=False) + getTerms(article['title'],remove_stopwords=False)
+            biwords = biword_phrase(terms)
             for word in terms:
                 if not word in frequencies:
                     frequencies[word] = 1
                 else:
                     frequencies[word] += 1
+            for biword in biwords:
+                if not biword in biword_frequencies:
+                    biword_frequencies[biword] = 1
+                else:
+                    biword_frequencies[biword] += 1
         with open(frequencies_path, 'wb') as file:
             pickle.dump(frequencies,file)
+        file.close()
+        with open(biword_frequencies_path,'wb') as file:
+            pickle.dump(biword_frequencies,file)
         file.close()
 
     def __generate_frequencies(self):
@@ -48,6 +62,7 @@ class FuzzySearch(object):
         mp_pool = mp.Pool(cpu_num)
         mp_pool.starmap(self.generate_frequencies_helper, [(self.wikis[i],i)for i in range(len(self.wikis))])
         frequencies = {}
+        biword_frequencies = {}
         for i in range(len(self.wikis)):
             with open(os.path.join(self.dictionary_folder,'frequencies.'+str(i)+'.pickle'),'rb') as file:
                 tmp_freq = pickle.load(file)
@@ -57,10 +72,22 @@ class FuzzySearch(object):
                     else:
                         frequencies[word] += tmp_freq[word]
             file.close()
+            with open(os.path.join(self.dictionary_folder,'biword_frequencies.'+str(i)+'.pickle'),'rb') as file:
+                tmp_freq = pickle.load(file)
+                for biword in tmp_freq:
+                    if not biword in biword_frequencies:
+                        biword_frequencies[biword] = tmp_freq[biword]
+                    else:
+                        biword_frequencies[biword] += biword_frequencies[biword]
+            file.close()
         with open(os.path.join(self.dictionary_folder,'frequencies.pickle'), 'wb') as file:
             pickle.dump(frequencies,file)
         file.close()
+        with open(os.path.join(self.dictionary_folder,'biword_frequencies.pickle'),'wb') as file:
+            pickle.dump(frequencies,file)
+        file.close()
         self.frequencies = frequencies
+        self.biword_frequencies = frequencies
     
     def __generate_dictionary(self):
         assert(self.frequencies is not None)
@@ -117,21 +144,26 @@ class FuzzySearch(object):
         return os.path.exists(os.path.join(self.dictionary_folder,'bigram_index.pickle')) and \
                 os.path.exists(os.path.join(self.dictionary_folder,'dictionary.pickle')) and \
                 os.path.exists(os.path.join(self.dictionary_folder,'frequencies.pickle')) and \
-                os.path.exists(os.path.join(self.dictionary_folder,'bigram_inverted.pickle'))
+                os.path.exists(os.path.join(self.dictionary_folder,'bigram_inverted.pickle')) and \
+                os.path.exists(os.path.join(self.dictionary_folder,'biword_frequencies.pickle'))
 
     def load(self):
         assert(os.path.exists(os.path.join(self.dictionary_folder,'frequencies.pickle')))
         assert(os.path.exists(os.path.join(self.dictionary_folder,'dictionary.pickle')))
         assert(os.path.exists(os.path.join(self.dictionary_folder,'bigram_index.pickle')))
         assert(os.path.exists(os.path.join(self.dictionary_folder,'bigram_inverted.pickle')))
+        assert(os.path.exists(os.path.join(self.dictionary_folder,'biword_frequencies.pickle')))
         print("Loading Frequency List")
         start = time.time()
         with open(os.path.join(self.dictionary_folder,'frequencies.pickle'),'rb') as file:
             self.frequencies = pickle.load(file)
         file.close()
+        with open(os.path.join(self.dictionary_folder,'biword_frequencies.pickle'),'rb') as file:
+            self.biword_frequencies = pickle.load(file)
+        file.close()
         finish = time.time()
         print("Loaded Frequency List in {} seconds".format(finish-start))
-        print("Loading DIctionary")
+        print("Loading Dictionary")
         start = time.time()
         with open(os.path.join(self.dictionary_folder,'dictionary.pickle'),'rb') as file:
             self.dictionary = pickle.load(file)
@@ -154,6 +186,7 @@ class FuzzySearch(object):
             os.remove(os.path.join(self.dictionary_folder, f))
 
     def wildcard_lookup(self, term, n=0):
+        term = term.lower()
         split = term.split('*')
         #Generate bigram list
         bigrams = bigram_word(split[0],'left') | bigram_word(split[-1],'right')
@@ -194,6 +227,7 @@ class FuzzySearch(object):
         return results
         
     def spell_check(self, term, jaccard_cutoff, edit_cutoff, n):
+        term = term.lower()
         #If word in dictionary
         if term in self.dictionary.values():
             return [(term,0)]
@@ -227,24 +261,20 @@ class FuzzySearch(object):
         weighted_distances.sort(key=lambda x:x[1])
         return weighted_distances[:n]
 
-    def process_fuzzy(self, query, wildcard_n = 3, spellcheck_n = 3):
+    def process_fuzzy(self, query, query_n = 5, wildcard_n = 10, spellcheck_n = 10):
+        query = query.lower()
         terms = query.split(' ')
         fuzzy_lists = []
         for term in terms:
             if '*' in term:
                 fuzzy_lists.append(self.wildcard_lookup(term,wildcard_n))
             else:
-                fuzzy_lists.append(self.spell_check(term,.5,2,spellcheck_n))
-        suggestion = ''
+                fuzzy_lists.append(self.spell_check(term,.25,2,spellcheck_n))
         queries = ['']
         for fuzzy_list in fuzzy_lists:
             partial_queries = queries
             queries = []
             if len(fuzzy_list)>0:
-                if suggestion == '':
-                    suggestion = fuzzy_list[0][0]
-                else:
-                    suggestion = suggestion + ' ' + fuzzy_list[0][0]
                 for fuzzy_term in fuzzy_list:
                     for partial_query in partial_queries:
                         if partial_query == '':
@@ -253,24 +283,36 @@ class FuzzySearch(object):
                             queries.append(partial_query+ ' ' + fuzzy_term[0])
             else:
                 queries = partial_queries
-        return suggestion, queries
+        ranked = []
+        for q in queries:
+            counter = 0
+            biwords = biword_phrase(q)
+            for biword in biwords:
+                if biword in self.biword_frequencies:
+                    counter += self.biword_frequencies[biword]
+            ranked.append((q,counter))
+        ranked.sort(key=lambda x:x[1])
+        result = []
+        for i in range(query_n):
+            result.append(ranked[i][0])
+        return result
 
         
 
 if __name__ == '__main__':
-    wikis = get_directory_file_list("../dataset/extracted_dataset/text/")
+    wikis = get_directory_file_list("dataset/extracted_dataset/text/")
     fuzzy = FuzzySearch(wikis)
-    # if not fuzzy.exists():
-    #     print("Generating Fuzzy Search")
-    #     start = time.time()
-    #     fuzzy.create()
-    #     finish = time.time()
-    #     print("Generated Fuzzy Search in {} seconds".format(str(finish-start)))
-    # else:
-    #     print("Loading Fuzzy Search")
-    #     start = time.time()
-    #     fuzzy.load()
-    #     finish = time.time()
-    #     print("Loaded Fuzzy Search in {} seconds".format(str(finish-start)))
-    # print(fuzzy.process_fuzzy('ho*se the graet'))
+    if not fuzzy.exists():
+        print("Generating Fuzzy Search")
+        start = time.time()
+        fuzzy.create()
+        finish = time.time()
+        print("Generated Fuzzy Search in {} seconds".format(str(finish-start)))
+    else:
+        print("Loading Fuzzy Search")
+        start = time.time()
+        fuzzy.load()
+        finish = time.time()
+        print("Loaded Fuzzy Search in {} seconds".format(str(finish-start)))
+    print(fuzzy.process_fuzzy('Alex* the greqt'))
     
