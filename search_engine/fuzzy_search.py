@@ -112,7 +112,7 @@ class FuzzySearch(object):
             pickle.dump(frequencies,file)
         file.close()
         self.frequencies = frequencies
-        self.biword_frequencies = frequencies
+        self.biword_frequencies = biword_frequencies
     
     def __generate_dictionary(self):
         '''Generate dictionary/lexicon from frequency keys'''
@@ -362,7 +362,7 @@ class FuzzySearch(object):
                 if biword in self.biword_frequencies:
                     counter += self.biword_frequencies[biword]
             ranked.append((q,counter))
-        ranked.sort(key=lambda x:x[1])
+        ranked.sort(key=lambda x:x[1],reverse=True)
         result = []
         #Limit the size of result list
         if len(ranked)<query_n:
