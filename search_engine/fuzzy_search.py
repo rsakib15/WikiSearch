@@ -266,7 +266,7 @@ class FuzzySearch(object):
     def process_fuzzy(self, query, query_n = 5, wildcard_n = 10, spellcheck_n = 10):
         query = query.lower()
         query = re.sub(r'[^a-z0-9 *]', ' ', query)
-        terms = query.split(' ')
+        terms = query.split()
         fuzzy_lists = []
         for term in terms:
             if '*' in term:
@@ -296,8 +296,12 @@ class FuzzySearch(object):
             ranked.append((q,counter))
         ranked.sort(key=lambda x:x[1])
         result = []
-        for i in range(query_n):
-            result.append(ranked[i][0])
+        if len(ranked)<query_n:
+            for i in range(len(ranked)):
+                result.append(ranked[i][0])
+        else:
+            for i in range(query_n):
+                result.append(ranked[i][0])
         return result
 
         
