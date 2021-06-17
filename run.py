@@ -38,7 +38,7 @@ def suggestion():
     fuzzy.load()
     finish = time.time()
     output = fuzzy.process_fuzzy(search_term)
-    return {"result": output[1]}
+    return {"result": output}
 
 
 @app.route('/index', methods=['GET'])
