@@ -292,6 +292,8 @@ class FuzzySearch(object):
         potentials = {}
         # Generate potentials
         for bigram in bigrams:
+            if bigram not in self.bigram_inverted:
+                continue
             words = self.bigram_inverted[bigram]
             for word in words:
                 if not word in potentials:
