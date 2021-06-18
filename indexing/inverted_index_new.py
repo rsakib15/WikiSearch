@@ -40,9 +40,12 @@ class InvertedIndex(object):
             pickle.dump(inverted_index,file)
         file.close()
 
-    def create_inverted_index(self):
+    def create_inverted_index(self,force = False):
         '''Create inverted index for dataset'''
         assert(self.wikis is not None)
+        if self.exists() and not force:
+            self.load()
+            return
         #Generate inverted indices for each wiki partition
         cpu_num = mp.cpu_count()
         mp_pool = mp.Pool(cpu_num)
