@@ -7,13 +7,12 @@ from ranking.rank_utils import heap
 from search_engine.search_utils import cosine_similarity
 
 class CosineSearch(object):
-    def __init__(self):
+    def __init__(self, doc_vec_data, inv_data,meta_file):
         start = time.time()
-        self.inverted_index_data = LoadInvertedIndex()
-        self.document_vector_index_data = LoadDocVecIndex()
+        self.inverted_index_data = inv_data
+        self.document_vector_index_data = doc_vec_data
         self.meta_data_dir = '../dataset/indexing_dataset/meta.json'
         self.article_mata = load_meta(self.meta_data_dir)
-        elapsed = time.time() - start
         return
 
     def search(self, query ):

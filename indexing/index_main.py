@@ -13,6 +13,7 @@ from indexing.document_vector_index import DocumentVectorIndex
 from indexing.index_helper import parseWikiJsons
 from indexing.inverted_index import InvertedIndex
 from indexing.positional_index import PositionalIndex
+from indexing.inverted_index_new import InvertedIndex
 
 
 def get_directory_file_list(base_directory):
@@ -109,12 +110,19 @@ def index_dataset():
     # print("Inverted vector indexing time: " + str(indexing_time))
 
     # #positional indexing
-    print("Positional indexing starts")
-    index_start = time.time()
-    pos_index = PositionalIndex(wikis)
-    pos_index.create_index()
-    indexing_time = time.time() - index_start
-    print("Positional indexing time: " + str(indexing_time))
+    # print("Positional indexing starts")
+    # index_start = time.time()
+    # pos_index = PositionalIndex(wikis)
+    # pos_index.create_index()
+    # indexing_time = time.time() - index_start
+    # print("Positional indexing time: " + str(indexing_time))
+    inverted_indexing = InvertedIndex(wikis, False)
+    print("Generating Inverted Index")
+    start = time.time()
+    inverted = InvertedIndex(wikis, False)
+    inverted.create_inverted_index()
+    finish = time.time()
+    print("Generated Inverted Index in {} seconds".format(str(finish - start)))
 
 
 if __name__ == "__main__":
