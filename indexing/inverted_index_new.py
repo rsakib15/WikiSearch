@@ -5,7 +5,6 @@ import sys
 import time
 from tqdm import tqdm
 from indexing.index_helper import parseWikiJsons, getTerms
-from indexing.index_main import get_directory_file_list
 import multiprocessing as mp
 
 class InvertedIndex(object):
@@ -51,6 +50,9 @@ class InvertedIndex(object):
         inverted_index = {}
         #Combine inverted indices into one massive index
         for i in tqdm(range(len(self.wikis))):
+            if os.path.exists(os.path.join(self.index_folder,'inverted_index_tmp.'+str(i)+'.pickle')):
+                continue
+
             with open(os.path.join(self.index_folder,'inverted_index_tmp.'+str(i)+'.pickle'), 'rb') as file:
                 tmp_inverted = pickle.load(file)
                 for word in tmp_inverted:
@@ -145,19 +147,20 @@ class InvertedIndex(object):
             os.remove(os.path.join(self.index_folder, f))
 
 if __name__ == '__main__':
-    wikis = get_directory_file_list("../dataset/extracted_dataset/text/")
-    inverted = InvertedIndex(wikis,False)
-    if not inverted.exists():
-        print("Generating Inverted Index")
-        start = time.time()
-        inverted.create_inverted_index()
-        finish = time.time()
-        print("Generated Inverted Index in {} seconds".format(str(finish-start)))
-    else:
-        print("Loading Inverted Index Search")
-        start = time.time()
-        inverted.load_inverted_index()
-        finish = time.time()
-        print("Loaded Inverted Index in {} seconds".format(str(finish-start)))
-    
-    print(inverted.find('alexander'))
+    pass
+    # wikis = get_directory_file_list("../dataset/extracted_dataset/text/")
+    # inverted = InvertedIndex(wikis,False)
+    # if not inverted.exists():
+    #     print("Generating Inverted Index")
+    #     start = time.time()
+    #     inverted.create_inverted_index()
+    #     finish = time.time()
+    #     print("Generated Inverted Index in {} seconds".format(str(finish-start)))
+    # else:
+    #     print("Loading Inverted Index Search")
+    #     start = time.time()
+    #     inverted.load_inverted_index()
+    #     finish = time.time()
+    #     print("Loaded Inverted Index in {} seconds".format(str(finish-start)))
+    #
+    # print(inverted.find('alexander'))

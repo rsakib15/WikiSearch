@@ -5,7 +5,8 @@ import re
 import time
 
 from indexing.data_loader import InvertedIndexData, DocumentVectorIndexData, LoadIDFData
-from indexing.index_main import load_meta
+from indexing.index_main import load_meta, get_directory_file_list
+from indexing.inverted_index_new import InvertedIndex
 from indexing.tf_idf import genreate_tf_idf, genreate_inv_meta
 from ranking.bag_of_words import BOW
 from ranking.cosine_similarity import CosineSearch
@@ -31,12 +32,23 @@ print("InvertedIndexData data done")
 print("IDF Data Loading")
 idf_data = LoadIDFData()
 print("IDF Data Loaded")
-print("TF_IDF start")
+# print("TF_IDF start")
 # genreate_tf_idf(document_vector_index_data,idf_data)
 # print("Separate meta start")
 # genreate_inv_meta()
 # print("Separate meta generated")
-
+#
+# wikis = get_directory_file_list("../dataset/extracted_dataset/text/")
+# inverted = InvertedIndex(wikis,False)
+# print("Loading Inverted Index Search")
+# start = time.time()
+# inverted.load_inverted_index()
+# finish = time.time()
+# print("Loaded Inverted Index in {} seconds".format(str(finish-start)))
+# wikis = get_directory_file_list("../dataset/extracted_dataset/text/")
+# inverted = InvertedIndex(wikis,False)
+# inverted.load_inverted_index()
+#
 
 
 def get_text(dir):
@@ -84,13 +96,13 @@ def searcher(query, method):
     if method == "bow":
         searcher = BOW(doc_vec_data = document_vector_index_data, inv_data = inverted_index_meta_data, idf_data = idf_data)
     elif method == "jaccard":
-        searcher = Jaccard()
+        searcher = Jaccard(doc_vec_data = document_vector_index_data, inv_data = inverted_index_meta_data, idf_data = idf_data)
     elif method == "highidf":
         searcher = HIGH_TF_IDF()
     elif method == "tfidf":
         searcher = TF_IDF()
     elif method == "cosine":
-        searcher = CosineSearch()
+        searcher = CosineSearch(doc_vec_data = document_vector_index_data, inv_data = inverted_index_meta_data,meta_file= meta_data)
     else:
         searcher = BOW(doc_vec_data = document_vector_index_data, inv_data = inverted_index_meta_data, idf_data = idf_data)
 
