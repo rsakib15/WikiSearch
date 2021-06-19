@@ -6,6 +6,8 @@ from collections import defaultdict
 import random
 from tqdm import tqdm
 
+from indexing.data_loader import LoadIDFData, InvertedIndexData, DocumentVectorIndexData
+from indexing.index_main import load_meta
 from ranking.cosine_similarity import CosineSearch
 from ranking.high_tf_idf import HIGH_TF_IDF
 from ranking.tf_idf import TF_IDF
@@ -67,7 +69,25 @@ def get_avg_time(path):
 
 
 def run_and_write(path, queries):
-    scores = ["BOW","Jaccard", "CosineSearch","TF_IDF","HIGH_TF_IDF"]
+    print("Meta data loading")
+    meta_data = load_meta(os.path.join('../dataset/indexing_dataset/meta.json'))
+    print("Meta data loaded")
+    from search_engine.search_utils import get_idf
+
+    print("DocumentVectorIndexData data loading")
+    document_vector_index_data = DocumentVectorIndexData()
+    print("DocumentVectorIndexData data done")
+    print("InvertedIndexData data loading")
+    inverted_index_meta_data = InvertedIndexData()
+    print("InvertedIndexData data done")
+    # print("IDF Data generating")
+    # get_idf(inverted_index_meta_data)
+    # print("IDF Data generated")
+    print("IDF Data Loading")
+    idf_data = LoadIDFData()
+    print("IDF Data Loaded")
+
+    scores = ["BOW", "Jaccard", "TF_IDF", "HIGH_TF_IDF"]
     query_result_file = codecs.open(path, "w", "utf8")
 
     for query in tqdm(queries):
@@ -75,20 +95,21 @@ def run_and_write(path, queries):
         res[str(query)] = {}
 
         for score in scores:
-            begin = time.time()
+
             if score == "BOW":
-                searcher = BOW()
+                searcher = BOW(doc_vec_data = document_vector_index_data, inv_data = inverted_index_meta_data, idf_data = idf_data)
             elif score == "Jaccard":
-                searcher = Jaccard()
+                searcher = Jaccard(doc_vec_data = document_vector_index_data, inv_data = inverted_index_meta_data, idf_data = idf_data)
             elif score == "CosineSearch":
-                searcher = CosineSearch()
+                searcher = CosineSearch(doc_vec_data = document_vector_index_data, inv_data = inverted_index_meta_data,meta_file= meta_data)
             elif score == "TF_IDF":
                 searcher = TF_IDF()
             elif score == "HIGH_TF_IDF":
                 searcher = HIGH_TF_IDF()
             else:
-                searcher = CosineSearch()
+                searcher = CosineSearch(doc_vec_data = document_vector_index_data, inv_data = inverted_index_meta_data,meta_file= meta_data)
 
+            begin = time.time()
             result = searcher.search(query)
             end = time.time() - begin
 
@@ -109,5 +130,6 @@ def score_main():
     sample_text = read_file("benchmark/sample_text.txt")
     sample_title = map(lambda s: s.strip(), sample_title)
     sample_text = map(lambda s: s.strip(), sample_text)
-    run_and_write("benchmark/result.json", sample_text)
+    run_and_write("benchmark/result.json", sample_title)
     avg_time = get_avg_time("benchmark/result.json")
+    print(avg_time)

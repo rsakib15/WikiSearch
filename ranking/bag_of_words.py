@@ -28,5 +28,5 @@ class BOW(object):
             #     res[term] = get_tf_idf_score(tf, idf_data, self.total_documents)
             scores[docID] = similarity(query_vec, self.tf_idf_DocVecIndex[docID])
         print(scores)
-        return heap(scores, 10), query
+        return (scores), query
 

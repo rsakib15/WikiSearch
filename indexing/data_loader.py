@@ -11,7 +11,7 @@ from indexing.index_main import get_directory_file_list
 
 
 def tf_idf_data():
-    with open(os.path.join("dataset/indexing_dataset/tf_idf/tf_idf.json"), "r") as f:
+    with open(os.path.join("../dataset/indexing_dataset/tf_idf/tf_idf.json"), "r") as f:
         return json.load(f)
 
 def LoadInvertedIndex():
