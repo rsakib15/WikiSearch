@@ -8,6 +8,6 @@ Search result will show the content according to the scoring of different rankin
 
 <kbd>![WikiSearch Home Page](docs/frontend-2.png?raw=true "WikiSearch")
 
-Wikisearch have facility for Support tolerant(fuzzy) search. The search system also support spelling correction and wildcard expansion while searching. 
+Wikisearch have facility for support tolerant(fuzzy) search. The search system support spelling correction and wildcard expansion while searching. 
 
 <kbd>![WikiSearch Home Page](docs/frontend-3.png?raw=true "WikiSearch")
